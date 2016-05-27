@@ -23,9 +23,13 @@ LinkedList<T>::~LinkedList() {
 // Private
 template <typename T>
 void LinkedList<T>::CopyList(const LinkedList& ll) {
-	//TODO
-		
-	return;
+	if (ll.Size() > 0) {
+		int llsize = ll.Size();
+		for (int i = 0; i < llsize ; i++) {
+			this->InsertAt( ll.ElementAt(i),i);
+			size += 1;
+		}
+	}
 }
 
 template <typename T>
@@ -36,6 +40,7 @@ void LinkedList<T>::DeleteList() {
 		delete current;
 		current = next;
 	}
+	size = 0;
 	front = NULL;
 }
 
@@ -43,6 +48,12 @@ void LinkedList<T>::DeleteList() {
 template <typename T>
 void LinkedList<T>::InsertFront(T item) {
 	Node<T>* n = new Node<T>(item);
+	if(size == 0) {
+		front = n;
+		back = n;
+		size += 1;
+		return;
+	}
 	front->prev = n;
 	n->next = front;
 	size += 1;
@@ -50,10 +61,11 @@ void LinkedList<T>::InsertFront(T item) {
 
 template <typename T>
 void LinkedList<T>::InsertBack(T item) {
-	Node<T>* n = new Node<T>(item);
-	n->prev = back;
-	back->next = n;
-	size += 1;
+//	Node<T>* n = new Node<T>(item);
+	//n->prev = back;
+	//back->next = n;
+	//size += 1;
+	this->InsertAt(item, size);
 }
 
 template <typename T>
@@ -71,13 +83,30 @@ void LinkedList<T>::InsertAt(T item, int p) {
 		current = current->next;
 	}
 
+	if(size == 0) {
+		front = n;
+		back = n;
+		size += 1;
+		return;
+	}
+	/*if(p == 0) {
+		front = n;
+	} else if (p == size) {
+		back = n;
+	}*/
 	Node<T>* parent = current->prev;
 	if (parent != NULL) {
 		parent->next = n;
 		n->prev = parent;
+	} else {
+		front = n;
 	}
 	n->next = current;
-	current->prev = n;
+	if (current != NULL) {
+		current->prev = n;
+	} else {
+		back = n;
+	}
 	size += 1;
 }
 
@@ -115,8 +144,10 @@ template <typename T>
 void LinkedList<T>::Append(const LinkedList& ll) {
 	LinkedList<T>* toAppend = new LinkedList<T>();
 	toAppend->CopyList(ll);
-	//TODO finish
-
+	back->next = toAppend->getFront();
+	toAppend->getFront()->prev = back;
+	back = toAppend->getBack();
+	size += toAppend->Size();
 }
 
 template <typename T>
@@ -130,6 +161,7 @@ void LinkedList<T>::RemoveDuplicates() {
 			check.insert(curr->data);
 		} else {
 			this->RemoveAt(i);
+			size -= 1;
 		}
 		i--;
 		curr = curr->prev;
