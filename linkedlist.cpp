@@ -27,7 +27,7 @@ void LinkedList<T>::CopyList(const LinkedList& ll) {
 	if (ll.Size() > 0) {
 		int llsize = ll.Size();
 		for (int i = 0; i < llsize ; i++) {
-			this->InsertAt( ll.ElementAt(i),i);
+			this->InsertBack(ll.ElementAt(i));
 			size += 1;
 		}
 	}
@@ -36,13 +36,18 @@ void LinkedList<T>::CopyList(const LinkedList& ll) {
 template <typename T>
 void LinkedList<T>::DeleteList() {
 	Node<T>* current = front;
-	while (current != NULL) {
-		Node<T>* next = current->next;
+	Node<T>* next = current->next;
+	front = NULL;
+	while (1) {
 		delete current;
 		current = next;
+		if(current->next != NULL) {
+			next = current->next;
+		} else {
+			break;
+		}
 	}
 	size = 0;
-	front = NULL;
 }
 
 // Mutators
@@ -52,93 +57,121 @@ void LinkedList<T>::InsertFront(T item) {
 	if(size == 0) {
 		front = n;
 		back = n;
-		size += 1;
-		return;
+		size++;
+	} else {
+		front->prev = n;
+		n->next = front;
+		front = n;
+		size++;
 	}
-	front->prev = n;
-	n->next = front;
-	front = n;
-	size += 1;
 }
 
 template <typename T>
 void LinkedList<T>::InsertBack(T item) {
 	Node<T>* n = new Node<T>(item);
-	n->prev = back;
-	back->next = n;
-	back = n;
-	size += 1;
+	if(size == 0) {
+		front = n;
+		back = n;
+		size++;
+	} else {
+		n->prev = back;
+		back->next = n;
+		back = n;
+		size++;
+	}
 }
 
 template <typename T>
 void LinkedList<T>::InsertAt(T item, int p) {
-	Node<T>* n = new Node<T>(item);
-	Node<T>* current = front;
-	int index = 0;
 
+	// invalid index p
 	if(p < 0 || p > size) {
 		throw std::out_of_range("InvalidIndexException");
 	}
 
-	while (current != NULL) {
-		if (index == p) break;
-		current = current->next;
+	// Case 1: in the front
+	if(p == 0) {
+		this->InsertFront(item);
+		return;
 	}
 
-	if(size == 0) {
-		InsertFront(item);
-	} else if (p == size) {
-		InsertBack(item);
+	// Case 2: in the back
+	if(p == size) {
+		this->InsertBack(item);
+		return;
 	}
-	/*if(p == 0) {
-		front = n;
-	} else if (p == size) {
-		back = n;
-	}*/
-	Node<T>* parent = current->prev;
-	if (parent != NULL) {
-		parent->next = n;
-		n->prev = parent;
-	} else {
-		front = n;
-	}
-	n->next = current;
-	if (current != NULL) {
+
+	// Case 3: somewhere in between
+	if(p > 0 && p < size) {
+		Node<T>* n = new Node<T>(item);
+		Node<T>* current = front;
+		int index = 0;
+		while (index != p) {
+			current = current->next;
+			index++;
+		}
+		n->prev = current->prev;
+		n->next = current;
 		current->prev = n;
-	} else {
-		back = n;
+		size++;
+		return;
 	}
-	size += 1;
+	
+	cout << "Something is wrong with InsertAt" << endl;
 }
 
 template <typename T>
 T LinkedList<T>::RemoveAt(int p) {
-	Node<T>* current = front;
-	int index = 0;
 
+	// invalid index or empty list
 	if(p < 0 || p >= size) {
 		throw std::out_of_range("InvalidIndexException");
 	} else if (size == 0) {
 		throw std::length_error("ListEmptyException");
 	}
 
-	while (current != NULL) {
-		if (index == p) break;
-		current = current->next;
+	// Case 1: in the front
+	if(p == 0) {
+		Node<T>* n = front;
+		front = front->next;
+		front->prev = NULL;
+		T val = n->data;
+		delete n;
+		size--;
+		return val;
 	}
 
-	Node<T>* parent = current->prev;
-	Node<T>* nextNode = current->next;
-	if (parent != NULL) {
-		parent->next = nextNode;
+	// Case 2: in the back
+	if(p == size-1) {
+		Node<T>* n = back;
+		back = back->prev;
+		back->next = NULL;
+		T val = n->data;
+		delete n;
+		size--;
+		return val;
 	}
-	if (nextNode != NULL) {
-		nextNode->prev = parent;
+
+	// Case 3: somewhere in between
+	if(p > 0 && p < size-1) {
+		Node<T>* current = front;
+		int index = 0;
+		while(index != p) {
+			current = current->next;
+			index++;
+		}
+		T val = current->data;
+		current = current->prev;
+		current->next = current->next->next;
+		current = current->next->next;
+		current->prev = current->prev->prev;
+		delete current;
+		size--;
+		return val;
 	}
-	T val = current->data;
-	delete current;
-	size -= 1;
-	return val;
+
+	cout << "Something is wrong with RemoveAt" << endl;
+	return front->data; // placeholder...should never return this;
 }
 
 template <typename T>
@@ -203,12 +236,11 @@ T LinkedList<T>::ElementAt(int p) const {
 	} else {
 		Node<T>* curr = front;
 		int i = 0;
-		while(curr != NULL) {
-			if(i  == p) {
-				return curr->data;
-			}
+		while(i != p) {
 			curr = curr->next;
+			i++;
 		}
+		return curr->data;
 	}
 	return front->data; // placeholder...should never return this
 }
