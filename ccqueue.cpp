@@ -5,7 +5,7 @@
     // note that tickets does not need to be re-declared
     CCQueue::CCQueue()
     {
-
+        maxticketid = 0;
     }
 
     // MUTATORS
@@ -17,8 +17,11 @@
     //        maxticketid is incremented
     // PARAM: customer and complaint fields to pass to Ticket constructor
     bool CCQueue::Add(string customer, string complaint)
-    {
-    	return false;
+    {   
+        if(customer == "" || complaint == "") return false;
+        Ticket* newTic = new Ticket(++maxticketid, customer, complaint);
+        tickets.InsertBack(*newTic);
+        return true;
     }
 
     // removes and returns an item from the front of the ticket queue
@@ -26,7 +29,7 @@
     // POST:  first item of the ticket queue is removed
     Ticket CCQueue::Service()
     {
-    	return tickets.ElementAt(0);
+    	return tickets.RemoveAt(0);
     }
 
     // moves an item towards the front of the queue by 1 position and returns true
@@ -35,7 +38,10 @@
     // PARAM: initial index of item to move up
     bool CCQueue::MoveUp(int index)
     {
-    	return false;
+        if(index < 1 || index > tickets.Size()-1) return false;
+    	Ticket item = tickets.RemoveAt(index);
+        tickets.InsertAt(item, index-1);
+        return true;
     }
 
     // moves an item towards the back of the queue by 1 position and returns true
@@ -44,7 +50,10 @@
     // PARAM: initial index of item to move down
     bool CCQueue::MoveDown(int index)
     {
-    	return false;
+    	if(index < 0 || index > tickets.Size()-2) return false;
+        Ticket item = tickets.RemoveAt(index);
+        tickets.InsertAt(item, index+1);
+        return true;
     }
 
     // ACCESSORS
@@ -52,5 +61,5 @@
     // returns the number of tickets
     int CCQueue::Size() const
     {
-    	return 0;
+    	return maxticketid;
     }
