@@ -1,6 +1,7 @@
 #ifdef _LINKEDLIST_H_
 
 #include <set>
+#include <iostream>
 
 // Constructors and Destructor
 template <typename T>
@@ -56,6 +57,7 @@ void LinkedList<T>::InsertFront(T item) {
 	}
 	front->prev = n;
 	n->next = front;
+	front = n;
 	size += 1;
 }
 
@@ -163,6 +165,7 @@ void LinkedList<T>::RemoveDuplicates() {
 			size -= 1;
 		}
 		i--;
+		//std::cout << curr->data << std::endl;
 		curr = curr->prev;
 	}
 	return;
