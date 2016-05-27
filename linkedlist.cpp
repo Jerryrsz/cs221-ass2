@@ -23,6 +23,7 @@ LinkedList<T>::~LinkedList() {
 template <typename T>
 void LinkedList<T>::CopyList(const LinkedList& ll) {
 	//TO-DO
+	return;
 }
 
 template <typename T>
@@ -57,7 +58,7 @@ template <typename T>
 void LinkedList<T>::InsertAt(T item, int p) {
 	Node<T>* n = new Node<T>(item);
 	Node<T>* current = front;
-	int index = 0
+	int index = 0;
 
 	// TODO throw index bound exception here
 
@@ -79,7 +80,7 @@ void LinkedList<T>::InsertAt(T item, int p) {
 template <typename T>
 T LinkedList<T>::RemoveAt(int p) {
 	Node<T>* current = front;
-	int index = 0
+	int index = 0;
 
 	// TODO throw index bound exception here
 
@@ -104,10 +105,15 @@ T LinkedList<T>::RemoveAt(int p) {
 
 template <typename T>
 void LinkedList<T>::Append(const LinkedList& ll) {
-	LinkedList<T> toAppend = new LinkedList<T>();
-	toAppend.CopyList(ll);
+	LinkedList<T>* toAppend = new LinkedList<T>();
+	toAppend->CopyList(ll);
 	//TODO finish
 
+}
+
+template <typename T>
+void LinkedList<T>::RemoveDuplicates() {
+	return;
 }
 
 // Accessors
@@ -118,8 +124,23 @@ int LinkedList<T>::Size() const {
 }
 
 template <typename T>
-int LinkedList<T>::IsEmpty() const {
+bool LinkedList<T>::IsEmpty() const {
 	return size == 0 ? true: false; // can be !size 
+}
+
+template <typename T>
+bool  LinkedList<T>::Contains(T item) const {
+	return false;
+}
+
+template <typename T>
+T LinkedList<T>::ElementAt(int p) const {
+	return front->data;
+}
+
+template <typename T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& ll) {
+	return *this;
 }
 
 #endif
