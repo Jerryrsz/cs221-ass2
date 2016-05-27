@@ -28,7 +28,7 @@ void LinkedList<T>::CopyList(const LinkedList& ll) {
 		int llsize = ll.Size();
 		for (int i = 0; i < llsize ; i++) {
 			this->InsertBack(ll.ElementAt(i));
-			size += 1;
+			size++;
 		}
 	}
 }
@@ -125,7 +125,8 @@ T LinkedList<T>::RemoveAt(int p) {
 
 	// invalid index or empty list
 	if(p < 0 || p >= size) {
-		throw std::out_of_range("InvalidIndexException");
+		//throw std::out_of_range("InvalidIndexException");
+		cout << "out_of_range" << endl;
 	} else if (size == 0) {
 		throw std::length_error("ListEmptyException");
 	}
@@ -195,7 +196,7 @@ void LinkedList<T>::RemoveDuplicates() {
 			check.insert(curr->data);
 		} else {
 			this->RemoveAt(i);
-			size -= 1;
+			size--;
 		}
 		i--;
 		//std::cout << curr->data << std::endl;
