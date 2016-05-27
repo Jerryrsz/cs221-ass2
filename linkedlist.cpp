@@ -61,11 +61,11 @@ void LinkedList<T>::InsertFront(T item) {
 
 template <typename T>
 void LinkedList<T>::InsertBack(T item) {
-//	Node<T>* n = new Node<T>(item);
-	//n->prev = back;
-	//back->next = n;
-	//size += 1;
-	this->InsertAt(item, size);
+	Node<T>* n = new Node<T>(item);
+	n->prev = back;
+	back->next = n;
+	back = n;
+	size += 1;
 }
 
 template <typename T>
@@ -74,7 +74,7 @@ void LinkedList<T>::InsertAt(T item, int p) {
 	Node<T>* current = front;
 	int index = 0;
 
-	if(p < 0 || p >= size) {
+	if(p < 0 || p > size) {
 		throw std::out_of_range("InvalidIndexException");
 	}
 
@@ -84,10 +84,9 @@ void LinkedList<T>::InsertAt(T item, int p) {
 	}
 
 	if(size == 0) {
-		front = n;
-		back = n;
-		size += 1;
-		return;
+		InsertFront(item);
+	} else if (p == size) {
+		InsertBack(item);
 	}
 	/*if(p == 0) {
 		front = n;
