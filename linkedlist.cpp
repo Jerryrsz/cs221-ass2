@@ -130,12 +130,32 @@ bool LinkedList<T>::IsEmpty() const {
 
 template <typename T>
 bool  LinkedList<T>::Contains(T item) const {
+	Node<T>* curr = front;
+	while(curr != NULL) {
+		if(curr->data == item) {
+			return true;
+		}
+		curr = curr->next;
+	}	
 	return false;
 }
 
 template <typename T>
 T LinkedList<T>::ElementAt(int p) const {
-	return front->data;
+	
+	if(p < 0 || p >= size) {
+		throw std::out_of_range("InvalidIndexException");
+	} else {
+		Node<T>* curr = front;
+		int i = 0;
+		while(curr != NULL) {
+			if(i  == p) {
+				return curr->data;
+			}
+			curr = curr->next;
+		}
+	}
+	return front->data; // placeholder...should never return this
 }
 
 template <typename T>
