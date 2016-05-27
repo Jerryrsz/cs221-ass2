@@ -1,5 +1,6 @@
 #ifdef _LINKEDLIST_H_
-#include "linkedlist.h"
+
+#include <set>
 
 // Constructors and Destructor
 template <typename T>
@@ -22,7 +23,8 @@ LinkedList<T>::~LinkedList() {
 // Private
 template <typename T>
 void LinkedList<T>::CopyList(const LinkedList& ll) {
-	//TO-DO
+	//TODO
+		
 	return;
 }
 
@@ -60,7 +62,9 @@ void LinkedList<T>::InsertAt(T item, int p) {
 	Node<T>* current = front;
 	int index = 0;
 
-	// TODO throw index bound exception here
+	if(p < 0 || p >= size) {
+		throw std::out_of_range("InvalidIndexException");
+	}
 
 	while (current != NULL) {
 		if (index == p) break;
@@ -82,7 +86,11 @@ T LinkedList<T>::RemoveAt(int p) {
 	Node<T>* current = front;
 	int index = 0;
 
-	// TODO throw index bound exception here
+	if(p < 0 || p >= size) {
+		throw std::out_of_range("InvalidIndexException");
+	} else if (size == 0) {
+		throw std::length_error("ListEmptyException");
+	}
 
 	while (current != NULL) {
 		if (index == p) break;
@@ -113,6 +121,19 @@ void LinkedList<T>::Append(const LinkedList& ll) {
 
 template <typename T>
 void LinkedList<T>::RemoveDuplicates() {
+	std::set<T> check;
+	Node<T>* curr = back;
+	int i = size - 1;
+	while (curr != NULL && i >= 0) {
+		int search = check.count(curr->data);
+		if (search == 0) {
+			check.insert(curr->data);
+		} else {
+			this->RemoveAt(i);
+		}
+		i--;
+		curr = curr->prev;
+	}
 	return;
 }
 
