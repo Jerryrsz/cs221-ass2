@@ -49,9 +49,6 @@ private:
 
   #include "linkedlistprivate.h" // declare your private helper functions this file
 
-  Node<T>* getBack() { return back; }
-  Node<T>* getFront() { return front; }
-
 public:
   // default constructor
   LinkedList();
