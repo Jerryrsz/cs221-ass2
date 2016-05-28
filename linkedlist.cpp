@@ -39,19 +39,12 @@ void LinkedList<T>::CopyList(const LinkedList& ll) {
 
 template <typename T>
 void LinkedList<T>::DeleteList() {
-	Node<T>* current = front;
-	Node<T>* next = current->next;
-	front = NULL;
-	while (1) {
-		delete current;
-		current = next;
-		if(current->next != NULL) {
-			next = current->next;
-		} else {
-			break;
-		}
+
+	while(size != 0) {
+		RemoveAt(size-1);
 	}
-	size = 0;
+	front = NULL;
+	back = NULL;
 }
 
 // Mutators
@@ -138,11 +131,11 @@ T LinkedList<T>::RemoveAt(int p) {
 
 	// Case 1: in the front
 	if(p == 0) {
-		Node<T>* n = front;
+		Node<T>* m = front;
 		front = front->next;
 		front->prev = NULL;
-		T val = n->data;
-		delete n;
+		T val = m->data;
+		delete m;
 		size--;
 		return val;
 	}
@@ -160,18 +153,18 @@ T LinkedList<T>::RemoveAt(int p) {
 
 	// Case 3: somewhere in between
 	if(p > 0 && p < size-1) {
-		Node<T>* current = front;
+		Node<T>* o = front;
 		int index = 0;
 		while(index != p) {
-			current = current->next;
+			o = o->next;
 			index++;
 		}
-		Node<T>* prev = current->prev;
-		Node<T>* next = current->next;
+		Node<T>* prev = o->prev;
+		Node<T>* next = o->next;
 		prev->next = next;
 		next->prev = prev;
-		T val = current->data;
-		delete current;
+		T val = o->data;
+		delete o;
 		size--;
 		return val;
 	}
@@ -187,7 +180,8 @@ void LinkedList<T>::Append(const LinkedList& ll) {
 
 template <typename T>
 void LinkedList<T>::RemoveDuplicates() {
-
+	// Jerry's shitty version
+	/*
 	// empty list case
 	if (size == 0) {
 		throw std::length_error("ListEmptyException");
@@ -200,18 +194,19 @@ void LinkedList<T>::RemoveDuplicates() {
 
 	// Case 2: more than 1 element
 	Node<T>* n = back;
-	T j;
-	for(int i = size-1; i > 0; i--) {
-		j = n->data;
-		for(int k = size-2; k >= 0; k--) {
-			if(j == ElementAt(k)) {
-				RemoveAt(k);
-				i--;
+	T item;
+	int j = size-2;
+	while(n != front) {
+		item = n->data;
+		for(int i = j; i >= 0; i--) {
+			if(item == ElementAt(i)) {
+				RemoveAt(i);
 			}
 		}
+		j--;
 		n = n->prev;
-	}
-	/*std::set<T> check;
+	}*/
+	std::set<T> check;
 	Node<T>* curr = back;
 	int i = size - 1;
 	while (curr != NULL && i >= 0) {
@@ -219,13 +214,11 @@ void LinkedList<T>::RemoveDuplicates() {
 		if (search == 0) {
 			check.insert(curr->data);
 		} else {
-			this->RemoveAt(i);
+			RemoveAt(i);
 		}
 		i--;
-		//std::cout << curr->data << std::endl;
 		curr = curr->prev;
 	}
-	return;*/
 }
 
 // Accessors
@@ -275,6 +268,7 @@ T LinkedList<T>::ElementAt(int p) const {
 
 template <typename T>
 LinkedList<T>& LinkedList<T>::operator=(const LinkedList<T>& ll) {
+	CopyList(ll);
 	return *this;
 }
 
