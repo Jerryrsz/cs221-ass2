@@ -28,7 +28,8 @@
     // throws a logic_error if the ticket queue is empty
     // POST:  first item of the ticket queue is removed
     Ticket CCQueue::Service()
-    {
+    {   
+        maxticketid--;
     	return tickets.RemoveAt(0);
     }
 
