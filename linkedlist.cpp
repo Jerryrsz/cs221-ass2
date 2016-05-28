@@ -46,8 +46,6 @@ void LinkedList<T>::DeleteList() {
 	while(size != 0) {
 		RemoveAt(size-1);
 	}
-	front = NULL;
-	back = NULL;
 }
 
 // Mutators
@@ -132,29 +130,38 @@ T LinkedList<T>::RemoveAt(int p) {
 		throw std::length_error("ListEmptyException");
 	}
 
-	// Case 1: in the front
+	// Case 1: only 1 element
+	if(size == 1) {
+		T val1 = front->data;
+		front = NULL;
+		back = NULL;
+		size--;
+		return val1;
+	}
+
+	// Case 2: in the front
 	if(p == 0) {
 		Node<T>* m = front;
 		front = front->next;
 		front->prev = NULL;
-		T val = m->data;
+		T val2 = m->data;
 		delete m;
 		size--;
-		return val;
+		return val2;
 	}
 
-	// Case 2: in the back
+	// Case 3: in the back
 	if(p == size-1) {
 		Node<T>* n = back;
 		back = back->prev;
 		back->next = NULL;
-		T val = n->data;
+		T val3 = n->data;
 		delete n;
 		size--;
-		return val;
+		return val3;
 	}
 
-	// Case 3: somewhere in between
+	// Case 4: somewhere in between
 	if(p > 0 && p < size-1) {
 		Node<T>* o = front;
 		int index = 0;
@@ -166,10 +173,10 @@ T LinkedList<T>::RemoveAt(int p) {
 		Node<T>* next = o->next;
 		prev->next = next;
 		next->prev = prev;
-		T val = o->data;
+		T val4 = o->data;
 		delete o;
 		size--;
-		return val;
+		return val4;
 	}
 
 	cout << "Something is wrong with RemoveAt" << endl;
