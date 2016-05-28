@@ -7,6 +7,7 @@ using namespace std;
 // Constructors and Destructor
 template <typename T>
 LinkedList<T>::LinkedList() {
+	cout << "List is being created..." << endl;
 	size = 0;
 	front = NULL;
 	back = NULL;
@@ -14,6 +15,7 @@ LinkedList<T>::LinkedList() {
 
 template <typename T>
 LinkedList<T>::LinkedList(const LinkedList& ll) {
+	cout << "List is being created with deep copy of parameter list..." << endl;
 	size = 0;
 	front = NULL;
 	back = NULL;
@@ -22,6 +24,7 @@ LinkedList<T>::LinkedList(const LinkedList& ll) {
 
 template <typename T>
 LinkedList<T>::~LinkedList() {
+	cout << "List is being destroyed..." << endl;
 	DeleteList();
 }
 
