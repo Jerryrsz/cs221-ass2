@@ -180,32 +180,7 @@ void LinkedList<T>::Append(const LinkedList& ll) {
 
 template <typename T>
 void LinkedList<T>::RemoveDuplicates() {
-	// Jerry's shitty version
-	/*
-	// empty list case
-	if (size == 0) {
-		throw std::length_error("ListEmptyException");
-	}
 
-	// Case 1: only 1 element
-	if(size == 1) {
-		return;
-	}
-
-	// Case 2: more than 1 element
-	Node<T>* n = back;
-	T item;
-	int j = size-2;
-	while(n != front) {
-		item = n->data;
-		for(int i = j; i >= 0; i--) {
-			if(item == ElementAt(i)) {
-				RemoveAt(i);
-			}
-		}
-		j--;
-		n = n->prev;
-	}*/
 	std::set<T> check;
 	Node<T>* curr = back;
 	int i = size - 1;
