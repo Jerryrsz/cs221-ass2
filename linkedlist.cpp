@@ -2,6 +2,7 @@
 
 #include <set>
 #include <iostream>
+using namespace std;
 
 // Constructors and Destructor
 template <typename T>
@@ -13,6 +14,9 @@ LinkedList<T>::LinkedList() {
 
 template <typename T>
 LinkedList<T>::LinkedList(const LinkedList& ll) {
+	size = 0;
+	front = NULL;
+	back = NULL;
 	CopyList(ll);
 }
 
@@ -25,11 +29,11 @@ LinkedList<T>::~LinkedList() {
 template <typename T>
 void LinkedList<T>::CopyList(const LinkedList& ll) {
 	if (ll.Size() > 0) {
-		int llsize = ll.Size();
-		for (int i = 0; i < llsize ; i++) {
-			this->InsertBack(ll.ElementAt(i));
-			size += 1;
+		for (int i = 0; i < ll.Size() ; i++) {
+			InsertBack(ll.ElementAt(i));
 		}
+	} else {
+		cout << "Nothing to copy for CopyList" << endl;
 	}
 }
 
@@ -91,13 +95,13 @@ void LinkedList<T>::InsertAt(T item, int p) {
 
 	// Case 1: in the front
 	if(p == 0) {
-		this->InsertFront(item);
+		InsertFront(item);
 		return;
 	}
 
 	// Case 2: in the back
 	if(p == size) {
-		this->InsertBack(item);
+		InsertBack(item);
 		return;
 	}
 
@@ -113,6 +117,8 @@ void LinkedList<T>::InsertAt(T item, int p) {
 		n->prev = current->prev;
 		n->next = current;
 		current->prev = n;
+		current = n->prev;
+		current->next = n;
 		size++;
 		return;
 	}
@@ -160,11 +166,11 @@ T LinkedList<T>::RemoveAt(int p) {
 			current = current->next;
 			index++;
 		}
+		Node<T>* prev = current->prev;
+		Node<T>* next = current->next;
+		prev->next = next;
+		next->prev = prev;
 		T val = current->data;
-		current = current->prev;
-		current->next = current->next->next;
-		current = current->next->next;
-		current->prev = current->prev->prev;
 		delete current;
 		size--;
 		return val;
@@ -176,17 +182,36 @@ T LinkedList<T>::RemoveAt(int p) {
 
 template <typename T>
 void LinkedList<T>::Append(const LinkedList& ll) {
-	LinkedList<T>* toAppend = new LinkedList<T>();
-	toAppend->CopyList(ll);
-	back->next = toAppend->getFront();
-	toAppend->getFront()->prev = back;
-	back = toAppend->getBack();
-	size += toAppend->Size();
+	CopyList(ll);
 }
 
 template <typename T>
 void LinkedList<T>::RemoveDuplicates() {
-	std::set<T> check;
+
+	// empty list case
+	if (size == 0) {
+		throw std::length_error("ListEmptyException");
+	}
+
+	// Case 1: only 1 element
+	if(size == 1) {
+		return;
+	}
+
+	// Case 2: more than 1 element
+	Node<T>* n = back;
+	T j;
+	for(int i = size-1; i > 0; i--) {
+		j = n->data;
+		for(int k = size-2; k >= 0; k--) {
+			if(j == ElementAt(k)) {
+				RemoveAt(k);
+				i--;
+			}
+		}
+		n = n->prev;
+	}
+	/*std::set<T> check;
 	Node<T>* curr = back;
 	int i = size - 1;
 	while (curr != NULL && i >= 0) {
@@ -195,13 +220,12 @@ void LinkedList<T>::RemoveDuplicates() {
 			check.insert(curr->data);
 		} else {
 			this->RemoveAt(i);
-			size -= 1;
 		}
 		i--;
 		//std::cout << curr->data << std::endl;
 		curr = curr->prev;
 	}
-	return;
+	return;*/
 }
 
 // Accessors
@@ -213,19 +237,23 @@ int LinkedList<T>::Size() const {
 
 template <typename T>
 bool LinkedList<T>::IsEmpty() const {
-	return size == 0 ? true: false; // can be !size 
+	return this->size == 0 ? true: false; // can be !size 
 }
 
 template <typename T>
 bool  LinkedList<T>::Contains(T item) const {
 	Node<T>* curr = front;
-	while(curr != NULL) {
+	int i = 0;
+	while(1) {
 		if(curr->data == item) {
 			return true;
 		}
+		i++;
+		if(i == Size()) {
+			return false;
+		}
 		curr = curr->next;
-	}	
-	return false;
+	}
 }
 
 template <typename T>
